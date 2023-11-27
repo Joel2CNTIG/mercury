@@ -1,0 +1,108 @@
+    it 'parses the method get-index' do
+        @request = Request.new(File.read("./spec/files/get-index.request.txt"))
+        _(@request.method).must_equal "GET"
+    end
+
+    it 'parses the resource get-index' do
+        @request = Request.new(File.read("./spec/files/get-index.request.txt"))
+        _(@request.resource).must_equal "/"
+    end
+
+    it 'parses the version get-index' do
+        @request = Request.new(File.read("./spec/files/get-index.request.txt"))
+        _(@request.version).must_equal "HTTP/1.1"
+    end
+
+    it 'parses the headers get-index' do
+        headers =  {"Host:"=>"developer.mozilla.org", "Accept-Language:"=>"fr"}
+        @request = Request.new(File.read("./spec/files/get-index.request.txt"))
+        _(@request.headers).must_equal headers
+    end
+
+    it 'parses the params get-index' do
+        params = {}
+        @request = Request.new(File.read("./spec/files/get-index.request.txt"))
+        _(@request.params).must_equal params
+    end
+
+    it 'parses the method get-examples' do
+        @request = Request.new(File.read("./spec/files/get-examples.request.txt"))
+        _(@request.method).must_equal "GET"
+    end
+
+    it 'parses the resource get-examples' do
+        @request = Request.new(File.read("./spec/files/get-examples.request.txt"))
+        _(@request.resource).must_equal "/examples"
+    end
+
+    it 'parses the version get-examples' do
+        @request = Request.new(File.read("./spec/files/get-examples.request.txt"))
+        _(@request.version).must_equal "HTTP/1.1"
+    end
+
+    it 'parses the headers get-examples' do
+        headers = {"Host:" => "example.com", "User-Agent:" => "ExampleBrowser/1.0", "Accept-Encoding:" => "gzip, deflate", "Accept:" => "*/*"}
+        @request = Request.new(File.read("./spec/files/get-examples.request.txt"))
+        _(@request.headers).must_equal headers
+    end
+
+    it 'parses the params get-examples' do
+        params = {}
+        @request = Request.new(File.read("./spec/files/get-examples.request.txt"))
+        _(@request.params).must_equal params
+    end
+
+    it 'parses the method get-fruits-with-filter' do
+        @request = Request.new(File.read("./spec/files/get-fruits-with-filter.request.txt"))
+        _(@request.method).must_equal "GET"
+    end
+
+    it 'parses the resource get-fruits-with-filter' do
+        @request = Request.new(File.read("./spec/files/get-fruits-with-filter.request.txt"))
+        _(@request.resource).must_equal "/fruits?type=bananas&minrating=4"
+    end
+
+    it 'parses the version get-fruits-with-filter' do
+     @request = Request.new(File.read("./spec/files/get-fruits-with-filter.request.txt"))
+        _(@request.version).must_equal "HTTP/1.1"
+    end
+   
+    it 'parses the headers get-fruits-with-filter' do
+        headers = {"Host:" => "fruits.com", "User-Agent:" => "ExampleBrowser/1.0", "Accept-Encoding:" => "gzip, deflate", "Accept:" => "*/*"}
+        @request = Request.new(File.read("./spec/files/get-fruits-with-filter.request.txt"))
+        _(@request.headers).must_equal headers
+    end
+
+    it 'parses the params get-fruits-with-filter' do
+        params = {"type" => "bananas", "minrating" => "4"}
+        @request = Request.new(File.read("./spec/files/get-fruits-with-filter.request.txt"))
+        _(@request.params).must_equal params
+    end
+
+    it 'parses the method post-login' do
+        @request = Request.new(File.read("./spec/files/post-login.request.txt"))
+        _(@request.method).must_equal "POST"
+    end
+
+    it 'parses the resource post-login' do
+        @request = Request.new(File.read("./spec/files/post-login.request.txt"))
+        _(@request.resource).must_equal "/login"
+    end
+
+    it 'parses the version post-login' do
+     @request = Request.new(File.read("./spec/files/post-login.request.txt"))
+        _(@request.version).must_equal "HTTP/1.1"
+    end
+   
+    it 'parses the headers post-login' do
+        headers = {"Host:" => "foo.example", "Content-Type:" => "application/x-www-form-urlencoded", "Content-Length:" => "39"}
+        @request = Request.new(File.read("./spec/files/post-login.request.txt"))
+        _(@request.headers).must_equal headers
+    end
+
+    it 'parses the params post-login' do
+        params = {"username" => "grillkorv", "password" => "verys3cret!"}
+        @request = Request.new(File.read("./spec/files/post-login.request.txt"))
+        _(@request.params).must_equal params
+    end
+
