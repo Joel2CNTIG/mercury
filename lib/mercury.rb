@@ -57,8 +57,10 @@ class Request
         i = 1
         while i < arr.length
             str += arr[i]
-            unless arr[i + 1] == nil
-                str += " #{arr[i + 1]}"
+            j = i
+            until arr[j + 1] == nil
+                str += " #{arr[j + 1]}"
+                j += 1
             end
             unless i = arr.length-1
                 str += ", "
