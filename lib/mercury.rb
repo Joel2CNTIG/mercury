@@ -1,7 +1,15 @@
 class Router
-    
-    def route(route_string)
 
+    def initialize
+        @route_list = []
+    end
+    
+    def add_route(route_string)
+        @route_list << (route_string)
+    end
+
+    def match_route(route_string)
+        @route_list.include?(route_string)
     end
 
 end
