@@ -1,10 +1,14 @@
 class Router
     
+    def route(route_string)
+
+    end
+
 end
 
 class Request
 
-    attr_reader :method, :resource, :version
+    attr_reader :method, :resource, :version, :headers, :params
     def initialize(rq_string)
         @data = rq_string.split("\n")
         row1 = @data[0]
@@ -12,7 +16,11 @@ class Request
         @method = @row1_split[0]
         @resource = @row1_split[1]
         @version = @row1_split[2]
+        @headers = get_headers
+        @params = get_params
     end
+
+    private
 
     def is_params?(str)
         if str.include?("?") || str.include?("=")
@@ -25,7 +33,7 @@ class Request
         str.split(/[?,=,&]/)
     end
 
-    def params
+    def get_params
         params = {}
         contents = split_by_char(@row1_split[1])
         i = 2
@@ -41,7 +49,7 @@ class Request
                 i += 2
             end
         end
-        @params = params
+        params
     end
 
     def construct_header_formated_string_from_arr(arr)
@@ -60,7 +68,7 @@ class Request
         return str
     end
 
-    def headers
+    def get_headers
         headers = {}
         @data.drop(1).each do |element|
             if element.include?(":")
@@ -71,7 +79,7 @@ class Request
                 end
             end
         end
-        @headers = headers
+        headers
     end
 end
 
