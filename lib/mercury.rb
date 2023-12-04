@@ -5,7 +5,7 @@ class Router
     end
     
     def add_route(route_string)
-        @route_list << (route_string)
+        @route_list << route_string
     end
 
     def match_route(route_string)
