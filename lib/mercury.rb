@@ -3,7 +3,7 @@ class Router
     def initialize
         @route_list = []
     end
-    
+
     def add_route(route_string)
         @route_list << route_string
     end
@@ -11,7 +11,6 @@ class Router
     def match_route(route_string)
         @route_list.include?(route_string)
     end
-
 end
 
 class Request
