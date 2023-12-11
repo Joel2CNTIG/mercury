@@ -68,15 +68,15 @@
           </div>
           <div class="code-statistics col-md-11">
             <div class="col-md-3">
-              <div><span class="metric">54</span><small> lines of codes</small></div>
+              <div><span class="metric">70</span><small> lines of codes</small></div>
               <div><span class="metric">0</span><small> methods</small></div>
             </div>
             <div class="col-md-3">
               <div><span class="metric">N/A</span><small> complexity/method</small></div>
-              <div><span class="metric">0</span><small> churn</small></div>
+              <div><span class="metric">1</span><small> churn</small></div>
             </div>
             <div class="col-md-3">
-              <div><span class="metric">108.24</span><small> complexity</small></div>
+              <div><span class="metric">128.36</span><small> complexity</small></div>
               <div><span class="metric">0</span><small> duplications</small></div>
             </div>
           </div>
@@ -143,6 +143,22 @@ describe &#39;Request&#39; do
         _(@request.version).must_equal &quot;HTTP/1.1&quot;
         _(@request.headers).must_equal headers
         _(@request.params).must_equal params
+    end
+
+    it &#39;parses the add route&#39; do
+        router = Router.new()
+        router.add_route(&quot;hej&quot;)
+        router.must_equal #&lt;Router:0x000002c0b6349c88 @route_list=[&quot;hej&quot;]&gt;
+    end
+
+    it &#39;parses the match route&#39; do
+        router = Router.new()
+        router.add_route(&quot;/fortnite&quot;)
+        router.add_route(&quot;/fortnite/:id&quot;)
+        router.add_route(&quot;/:id/fortniteabc/:nbr/:var&quot;)
+        (router.match_route(&quot;/fortnite&quot;)).must_equal true
+        (router.match_route(&quot;/fortnite/:id&quot;)).must_equal true
+        (router.match_route(&quot;/:id/fortniteabc/:nbr/:var&quot;)).must_equal true
     end
 end
     

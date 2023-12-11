@@ -1,5 +1,4 @@
 class Router
-
     def initialize
         @route_list = []
     end
@@ -9,12 +8,25 @@ class Router
     end
 
     def match_route(route_string)
-        @route_list.include?(route_string)
+        @route_list.each do |route|
+            route_split = route.split("/")
+            route_string_split = route_string.split("/")
+            i = 0
+            while i < route_split.length
+                if route_split[i][0] == ":"
+                    route_split[i] = route_string_split[i]
+                end
+                i += 1
+            end
+            if route_split == route_string_split
+                return true
+            end
+        end
+        return false
     end
 end
 
 class Request
-
     attr_reader :method, :resource, :version, :headers, :params
     def initialize(rq_string)
         @data = rq_string.split("\n")
@@ -91,7 +103,3 @@ class Request
         headers
     end
 end
-
-request_string = File.read("spec/files/get-fruits-with-filter.request.txt")
-request = Request.new(request_string)
-p request.headers

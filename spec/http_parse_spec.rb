@@ -45,6 +45,22 @@ describe 'Request' do
         _(@request.headers).must_equal headers
         _(@request.params).must_equal params
     end
+
+    it 'parses the add route' do
+        router = Router.new()
+        router.add_route("hej")
+        router.must_equal #<Router:0x000002c0b6349c88 @route_list=["hej"]>
+    end
+
+    it 'parses the match route' do
+        router = Router.new()
+        router.add_route("/fortnite")
+        router.add_route("/fortnite/:id")
+        router.add_route("/:id/fortniteabc/:nbr/:var")
+        (router.match_route("/fortnite")).must_equal true
+        (router.match_route("/fortnite/:id")).must_equal true
+        (router.match_route("/:id/fortniteabc/:nbr/:var")).must_equal true
+    end
 end
     
 

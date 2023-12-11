@@ -68,12 +68,12 @@
           </div>
           <div class="code-statistics col-md-11">
             <div class="col-md-3">
-              <div><span class="metric">9</span><small> lines of codes</small></div>
+              <div><span class="metric">21</span><small> lines of codes</small></div>
               <div><span class="metric">0</span><small> methods</small></div>
             </div>
             <div class="col-md-3">
               <div><span class="metric">N/A</span><small> complexity/method</small></div>
-              <div><span class="metric">0</span><small> churn</small></div>
+              <div><span class="metric">3</span><small> churn</small></div>
             </div>
             <div class="col-md-3">
               <div><span class="metric">0.0</span><small> complexity</small></div>
@@ -99,13 +99,25 @@
 
     <code class="prettyprint linenums lang-ruby file-code js-file-code">require_relative &quot;lib/mercury.rb&quot;
 
-request_string = File.read(&quot;spec/files/get-index.request.txt&quot;)
-request = Request.new(request_string)
-p request.method
-p request.resource
-p request.version
-p request.headers
-p request.params
+#request_string = File.read(&quot;spec/files/get-index.request.txt&quot;)
+#request = Request.new(request_string)
+#router = Router.new
+#router.add_route(&#39;/fortnite&#39;)
+#router.add_route(&#39;/fortnite/:id&#39;)
+#p router.match_route(&#39;/fortnite/5&#39;)
+#p request.method
+#p request.resource
+#p request.version
+#p request.headers
+#p request.params
+
+router = Router.new()
+p router
+router.add_route(&quot;forre/:id/tjo/:hej/pro&quot;) do
+    puts &quot;woot&quot;
+end
+router.add_route(&quot;hej/dig&quot;)
+p router.match_route(&quot;forre/6/tjo/8/pro&quot;)
 </code>
   </div>
 </div>
