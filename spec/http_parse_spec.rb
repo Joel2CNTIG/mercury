@@ -58,8 +58,8 @@ describe 'Request' do
         router.add_route("/fortnite/:id")
         router.add_route("/:id/fortniteabc/:nbr/:var")
         (router.match_route("/fortnite")).must_equal true
-        (router.match_route("/fortnite/:id")).must_equal true
-        (router.match_route("/:id/fortniteabc/:nbr/:var")).must_equal true
+        (router.match_route("/fortnite/8")).must_equal true
+        (router.match_route("/7/fortniteabc/14/hej")).must_equal true
     end
 end
     
