@@ -1,31 +1,3 @@
-class Router
-    def initialize
-        @route_list = []
-    end
-
-    def add_route(route_string)
-        @route_list << route_string
-    end
-
-    def match_route(route_string)
-        @route_list.each do |route|
-            route_split = route.split("/")
-            route_string_split = route_string.split("/")
-            i = 0
-            while i < route_split.length
-                if route_split[i][0] == ":"
-                    route_split[i] = route_string_split[i]
-                end
-                i += 1
-            end
-            if route_split == route_string_split
-                return true
-            end
-        end
-        return false
-    end
-end
-
 class Request
     attr_reader :method, :resource, :version, :headers, :params
     def initialize(rq_string)

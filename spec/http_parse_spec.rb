@@ -48,7 +48,7 @@ describe 'Request' do
 
     it 'parses the add route' do
         router = Router.new()
-        router.add_route("hej")
+        router.add_route("/hej")
         router.must_equal #<Router:0x000002c0b6349c88 @route_list=["hej"]>
     end
 
@@ -57,9 +57,20 @@ describe 'Request' do
         router.add_route("/fortnite")
         router.add_route("/fortnite/:id")
         router.add_route("/:id/fortniteabc/:nbr/:var")
-        (router.match_route("/fortnite")).must_equal true
-        (router.match_route("/fortnite/8")).must_equal true
-        (router.match_route("/7/fortniteabc/14/hej")).must_equal true
+        (router.match_route("/fortnite")).must_equal 0
+        (router.match_route("/fortnite/8")).must_equal 1
+        (router.match_route("/7/fortniteabc/14/hej")).must_equal 2
+    end
+
+    it 'parses the collect params' do
+        router = Router.new()
+        router.add_route("/fortnite")
+        router.add_route("/fortnite/:id")
+        router.add_route("/:id/fortniteabc/:nbr/:var")
+        (router.collect_params("/fortnite")).must_equal []
+        (router.collect_params("/fortnite/8")).must_equal ["8"]
+        (router.collect_params("/7/fortniteabc/14/hej")).must_equal ["7","14","hej"]
+
     end
 end
     

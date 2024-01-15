@@ -1,4 +1,5 @@
-require_relative "lib/mercury.rb"
+require_relative "lib/request.rb"
+require_relative "lib/router.rb"
 
 #request_string = File.read("spec/files/get-index.request.txt")
 #request = Request.new(request_string)
@@ -13,9 +14,8 @@ require_relative "lib/mercury.rb"
 #p request.params
 
 router = Router.new()
-p router
-router.add_route("forre/:id/tjo/:hej/pro") do
-    puts "woot"
-end
-router.add_route("hej/dig")
-p router.match_route("forre/6/tjo/8/pro")
+router.add_route("/fortnite")
+router.add_route("/fortnite/:id")
+router.add_route("/:id/fortniteabc/:nbr/:var")
+p router.collect_params("/fortnite/8")
+
