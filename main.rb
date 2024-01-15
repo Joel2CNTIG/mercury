@@ -17,5 +17,5 @@ router = Router.new()
 router.add_route("/fortnite")
 router.add_route("/fortnite/:id")
 router.add_route("/:id/fortniteabc/:nbr/:var")
-p router.collect_params("/fortnite/8")
+p router.collect_params("/7/fortniteabc/4/aaa")
 

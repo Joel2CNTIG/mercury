@@ -1,4 +1,5 @@
 class Router
+    attr_accessor :route_list, :params
     def initialize
         @route_list = []
     end
@@ -28,7 +29,7 @@ class Router
     end
 
     def collect_params(route_string)
-        params = []
+        params = {}
         route = @route_list[match_route(route_string)]
         route_split = route.split("/")
         route_string_split = route_string.split("/")
@@ -37,10 +38,11 @@ class Router
         i = 0
         while i < route_string_split.length
             if route_split[i][0] == ":"
-                params << route_string_split[i]
+                route_split[i].slice!(0)
+                params[route_split[i].to_sym] = route_string_split[i]
             end
             i += 1
         end
-        return params
+        params
     end
 end
