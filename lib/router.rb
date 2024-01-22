@@ -1,10 +1,16 @@
 class Router
-    attr_accessor :route_list, :params
+    attr_accessor :route_list, :code_list, :params
     def initialize
         @route_list = []
+        @code_list = []
     end
 
-    def add_route(route_string)
+    def add_route(route_string, &blk)
+        if block_given?
+            @code_list << yield(self)
+        else
+            @code_list << ""
+        end
         @route_list << route_string
     end
 

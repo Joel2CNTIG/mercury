@@ -47,6 +47,7 @@ class Request
         str = ""
         i = 1
         while i < arr.length
+            arr[i].slice!(0)
             str += arr[i]
             j = i
             until arr[j + 1] == nil
@@ -65,7 +66,7 @@ class Request
         headers = {}
         @data.drop(1).each do |element|
             if element.include?(":")
-                element = element.split(" ")
+                element = element.split(":")
                 header_string = construct_header_formated_string_from_arr(element)
                 unless element[0] == nil
                     headers[element[0]] = header_string

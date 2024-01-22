@@ -4,7 +4,7 @@ require "lib/router.rb"
 describe 'Request' do
 
     it 'parses the get-index' do
-        headers =  {"Host:"=>"developer.mozilla.org", "Accept-Language:"=>"fr"}
+        headers =  {"Host"=>"developer.mozilla.org", "Accept-Language"=>"fr"}
         params = {}
         @request = Request.new(File.read("./spec/files/get-index.request.txt"))
         _(@request.method).must_equal "GET"
@@ -15,7 +15,7 @@ describe 'Request' do
     end
 
     it 'parses the get-examples' do
-        headers = {"Host:" => "example.com", "User-Agent:" => "ExampleBrowser/1.0", "Accept-Encoding:" => "gzip, deflate", "Accept:" => "*/*"}
+        headers = {"Host" => "example.com", "User-Agent" => "ExampleBrowser/1.0", "Accept-Encoding" => "gzip, deflate", "Accept" => "*/*"}
         params = {}
         @request = Request.new(File.read("./spec/files/get-examples.request.txt"))
         _(@request.method).must_equal "GET"
@@ -26,7 +26,7 @@ describe 'Request' do
     end
 
     it 'parses the get-fruits-with-filter' do
-        headers = {"Host:" => "fruits.com", "User-Agent:" => "ExampleBrowser/1.0", "Accept-Encoding:" => "gzip, deflate", "Accept:" => "*/*"}
+        headers = {"Host" => "fruits.com", "User-Agent" => "ExampleBrowser/1.0", "Accept-Encoding" => "gzip, deflate", "Accept" => "*/*"}
         params = {"type" => "bananas", "minrating" => "4"}
         @request = Request.new(File.read("./spec/files/get-fruits-with-filter.request.txt"))
         _(@request.method).must_equal "GET"
@@ -37,7 +37,7 @@ describe 'Request' do
     end
 
     it 'parses the post-login' do
-        headers = {"Host:" => "foo.example", "Content-Type:" => "application/x-www-form-urlencoded", "Content-Length:" => "39"}
+        headers = {"Host" => "foo.example", "Content-Type" => "application/x-www-form-urlencoded", "Content-Length" => "39"}
         params = {"username" => "grillkorv", "password" => "verys3cret!"}
         @request = Request.new(File.read("./spec/files/post-login.request.txt"))
         _(@request.method).must_equal "POST"
