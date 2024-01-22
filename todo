@@ -1,2 +1,5 @@
 (v3) Klart idag: Collect params i router
 För nästa gång: Börja jobba med HTTP-server
+
+(v4) Gjort idag: Skapat response klass
+För nästa gång: Gör klart response klass
