@@ -3,42 +3,52 @@ require_relative 'router.rb'
 
 class Response 
 
-    def initialize(request, router)
+    attr_reader :status, :header_arr, :param_arr, :html
+
+    def initialize(request, router, session)
         @router = router
         @request = request
+        @session = session
+        @list = router.list
     end
 
-    def print_status
-        status = @request.version + "200"
-    end
-
-    def print_headers
-        headers = @request.headers
-        header_arr = []
-        headers.each do |header|
-            header_str = "#{header[0]}: #{header[1]}\r\n"
-            header_arr << header_str
+    def status(route)
+        if @router.match_route(route) != false
+            status = @request.version + "200 OK \r\n"
+        else
+            status = @request.version + "404 NOT FOUND \r\n"
         end
-        header_arr
-    end
-
-    def print_params
-        params = @request.params
-        param_arr = []
-        params.each do |param|
-            param_str = "#{param[0]}: #{param[1]}\r\n"
-            param_arr << param_str
-        end
-        if param_arr == []
-            param_arr << "\r\n"
-        end
-        param_arr
+        return status
     end
 
     def html(route)
-        pos = @router.match_route(route)
-        unless pos == false
-            html = @router.code_list[pos]
+        if status(route) == @request.version + "200 OK \r\n"
+            pos = @router.match_route(route)
+            params = @list[pos][:params]
+            html = "<html> <head> <meta charset='UTF-8'> </head> #{@list[pos][:code]} </html>"
+        else
+            html = "<html> <head> <meta charset='UTF-8'> </head> <h1> Route not found! :( </h1> </html>"
         end
+    end
+
+    def content_length(text)
+        "content-length: #{text.length} \r\n"
+    end
+
+    def content_type(request)
+        headers = request.headers
+        accept = headers["Accept"]
+        type = accept.split(",").first
+        "content-type: #{type} \r\n"
+    end
+
+    def print
+        html = html(@request.resource)
+        @session.print status(@request.resource)
+        @session.print content_length(html)
+        @session.print content_type(@request)
+        @session.print "\r\n"
+        @session.print html
+        @session.close
     end
 end

@@ -1,7 +1,7 @@
 class Request
     attr_reader :method, :resource, :version, :headers, :params
     def initialize(rq_string)
-        @data = rq_string.split("\n")
+        @data = rq_string.split("\r\n")
         row1 = @data[0]
         @row1_split = row1.split(" ")
         @method = @row1_split[0]

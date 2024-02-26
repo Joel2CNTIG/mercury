@@ -12,8 +12,11 @@ class HTTPServer
     def start
         server = TCPServer.new(@port)
         puts "Listening on #{@port}"
-        #router = Router.new
-        #router.add_route...
+        router = Router.new
+        router.add_route('/hej/:id') do
+            "<h1> Välkommen till min hemsida </h1>
+            <h2> Jag gillar grillkorv och är #{} år gammal </h2>"
+        end
 
         while session = server.accept
             data = ""
@@ -25,19 +28,11 @@ class HTTPServer
             puts data
             puts "-" * 40 
 
-            #request = Request.new(data)
-            #router.match_route(request)
+            request = Request.new(data)
             #Sen kolla om resursen (filen finns)
-
-
-            # Nedanstående bör göras i er Response-klass
-            html = "<h1>Hello, World!</h1>"
-
-            session.print "HTTP/1.1 200\r\n"
-            session.print "Content-Type: text/html\r\n"
-            session.print "\r\n"
-            session.print html
-            session.close
+            response = Response.new(request, router, session)
+            
+            response.print
         end
     end
 end

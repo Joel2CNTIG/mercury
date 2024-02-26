@@ -3,3 +3,6 @@ För nästa gång: Börja jobba med HTTP-server
 
 (v4) Gjort idag: Skapat response klass
 För nästa gång: Gör klart response klass
+
+(v5) Gjort idag: Webbservern fungerar ish
+För nästa gång: Lägga till params funktionalitet
