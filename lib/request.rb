@@ -14,14 +14,14 @@ class Request
     private
 
     def is_params?(str)
-        if str.include?("?") || str.include?("=")
+        if str.include?("?") || str.include?("&")
             return true
         end
         return false
     end
 
     def split_by_char(str)
-        str.split(/[?,=,&]/)
+        str.split(/[?,=,&,%]/)
     end
 
     def get_params

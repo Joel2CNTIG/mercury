@@ -1,0 +1,1 @@
+<h1> Hej jag gillar grillad korv och är #{params[:id]} år gammal </h1>
