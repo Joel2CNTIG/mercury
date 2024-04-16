@@ -8,9 +8,22 @@ class HTTPServer
 
     def initialize(port)
         @port = port
+        @location = nil
     end
 
-  
+    def redirect(url)
+        location = url
+    end
+
+    def html(path, params)
+        html = File.read(path)
+        params.each {|key, value| 
+            str = '#'
+            str += "{params[:#{key}]}"
+            html = html.gsub(str, value)
+        }
+        return html
+    end
 
     def start(&blk)
         server = TCPServer.new(@port)
@@ -21,17 +34,18 @@ class HTTPServer
             "<h1> error! <h1>"
         end
         router.get('/hej/:id') do |params|
-            "<form action='/hej/#{params[:id]}/post-print_nbr' method='post'>
-                <input type='text' name='first_name' placeholder='first name'> 
-                <input type='password' name='pwd' placeholder='password'>
-                <input type='submit' value='submit'></form>"
+            html = html('lib/html/start.html', params)
+            #"<form action='/hej/#{params[:id]}/post-print_nbr' method='post'>
+            #<input type='text' name='first_name' placeholder='first name'> 
+            #<input type='password' name='pwd' placeholder='password'>
+            #<input type='submit' value='submit'></form>"
         end 
 
         router.post('/hej/:id/post-print_nbr') do |params|
             f = File.open('test.txt', 'w')
             f.puts(params[:first_name])
             f.close
-            router.redirect('/hej/7')
+            redirect("/hej/#{params[:id]}/banan")
         end
 
         while session = server.accept
@@ -64,6 +78,7 @@ class HTTPServer
             request = Request.new(data)
             response = Response.new(request, router, session)
             response.print
+            @location = nil
         end
     end
 end

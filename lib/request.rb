@@ -37,6 +37,7 @@ class Request
             i = 1
             while i <= contents.length
                 params[contents[i-1]] = contents[i]
+                params[contents[i-1]].gsub!("+", " ")
                 i += 2
             end
         end
