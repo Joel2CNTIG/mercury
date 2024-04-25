@@ -16,7 +16,7 @@ class HTTPServer
     end
 
     def html(path, params)
-        html = File.read(path)
+        html = File.read("./public/#{path}")
         params.each {|key, value| 
             str = '#'
             str += "{params[:#{key}]}"
@@ -30,20 +30,19 @@ class HTTPServer
         puts "Listening on #{@port}"
         router = Router.new
 
+        router.get('/mamma/:age') do |params|
+            "<h1> Din Morsa är #{params[:age]} år gammal! <h1>"
+        end
         router.get('/error') do |params|
             "<h1> error! <h1>"
         end
         router.get('/hej/:id') do |params|
-            html = html('lib/html/start.html', params)
-            #"<form action='/hej/#{params[:id]}/post-print_nbr' method='post'>
-            #<input type='text' name='first_name' placeholder='first name'> 
-            #<input type='password' name='pwd' placeholder='password'>
-            #<input type='submit' value='submit'></form>"
+            html = html('html/start.html', params)
         end 
 
         router.post('/hej/:id/post-print_nbr') do |params|
             f = File.open('test.txt', 'w')
-            f.puts(params[:first_name])
+            f.puts(params[:pwd])
             f.close
             redirect("/hej/#{params[:id]}/banan")
         end
@@ -77,7 +76,6 @@ class HTTPServer
             puts "-" * 40 
             request = Request.new(data)
             response = Response.new(request, router, session)
-            response.print
             @location = nil
         end
     end

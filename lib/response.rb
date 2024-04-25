@@ -2,7 +2,6 @@ require_relative 'request.rb'
 require_relative 'router.rb'
 
 class Response 
-
     attr_reader :status, :header_arr, :param_arr, :html
 
     def initialize(request, router, session)
@@ -10,110 +9,88 @@ class Response
         @request = request
         @session = session
         @list = router.list
+        @ok = @request.version + " 200 OK \r\n"
+        @not_ok = @request.version + " 404 NOT FOUND \r\n"
+        @type = type_of_content(request)
+        build_response_and_print()
     end
 
-    def print
-        html = html(@request.resource)
+    def build_response_and_print()
+        if @router.match_route(@request.resource, @request.method)[0] != false
+            status = @ok
+            content = content(@request.resource)
+        elsif File.file?("./public#{@request.resource}")
+            status = @ok
+            content = static_resource(@request.resource)
+        else
+            status = @not_ok
+            content = html = "<html> <head> <meta charset='UTF-8'> </head> <h1> Route not found! :( </h1> </html>"
+        end
+        content_length = content_length(content)
+        content_type = content_type(@request)
+        #p status, content, content_length, content_type
         if @location
             status = "#{@request.version}" + " 302 FOUND \r\n"
             @session.print status
             @session.print "Location: #{@location}"
             @session.print "\r\n"
         else
-            @session.print status(@request.resource)
-            @session.print content_length(html)
-            @session.print content_type(@request)
+            @session.print status
+            @session.print content_length
+            @session.print content_type
             @session.print "\r\n"
-            @session.print html
+            @session.print content
         end
         @session.close
     end
 
     private
 
-    def status(route)
-        ok = @request.version + " 200 OK \r\n"
-        not_ok = @request.version + " 404 NOT FOUND \r\n"
-        if @router.match_route(route, @request.method)[0] != false
-            status = ok
-        else
-            status = not_ok
+    def content(route)
+        method = @request.method
+        pos = @router.match_route(route, method)[0]
+        params = @router.match_route(route, method)[1]
+        request_params = @request.params
+        request_params.each do |param|
+            symbol = param[0].to_sym
+            params[symbol] = param[1]
         end
-        if is_img(@request) && File.file?(".#{@request.resource}")
-            status = ok
-        end
-        if is_css(@request)
-            status = ok
-        end
-        return status
-    end
-
-    def is_css(request)
-        resource = request.resource
-        while resource != ""
-            if content_type(request) == "content-type: text/css \r\n" && File.file?(".#{resource}")
-                return true
-            end
-            resource = resource[1..-1]
-        end
-        return false
-    end
-
-    def css_from(resource)
-        while resource != ""
-            if content_type(resource) == "content-type: text/css \r\n" && File.file?(".#{resource}")
-                return ".#{resource}"
-            end
-            resource = resource[1..-1]
+        code = @list[pos][:block].call(params)
+        if method == "GET"
+            return "<html> <head> <meta charset='UTF-8'> </head> #{code} </html>"
+        elsif method == "POST"
+            @location = code
+            return code
         end
     end
 
-    def is_img(request)
-        return content_type(request).start_with?("content-type: image")
+    def static_resource(route)
+        if @type == "img"
+            return File.open("./public#{@request.resource}", "rb").read
+        elsif @type == "css" || @type == "js"
+            return File.read("./public#{@request.resource}")
+        end
     end
 
-    def html(route)
-        unless status(route) == @request.version + " 404 NOT FOUND \r\n"
-            method = @request.method
-            if @router.match_route(route, method)[0] != false
-                pos = @router.match_route(route, method)[0]
-                params = @router.match_route(route, method)[1]
-                request_params = @request.params
-                request_params.each do |param|
-                    symbol = param[0].to_sym
-                    params[symbol] = param[1]
-                end
-                code = @list[pos][:block].call(params)
-                if method == "GET"
-                    html = "<html> <head> <meta charset='UTF-8'> </head> #{code} </html>"
-                elsif method == "POST"
-                    html = code
-                    @location = code
-                end
-            elsif is_img(@request) && status(route) == @request.version + " 200 OK \r\n"
-                html = File.open(".#{@request.resource}", "rb").read
-            elsif is_css(@request) && status(route) == @request.version + " 200 OK \r\n"
-                html = File.read(css_from(route))
-            else
-                html = "<html> <head> <meta charset='UTF-8'> </head> <h1> Route not found! :( </h1> </html>"
-            end
-        else
-            html = "<html> <head> <meta charset='UTF-8'> </head> <h1> Route not found! :( </h1> </html>"
+    def type_of_content(request)
+        if content_type(request).start_with?("content-type: image") && !content_type(request).end_with?("avif \r\n")
+            return "img"
+        elsif content_type(request).start_with?("content-type: text/css")
+            return "css"
+        elsif content_type(request).start_with?("content-type: text/javascript")
+            return "js"
         end
     end
 
     def content_length(input)
         c_length = "content-length: #{input.length} \r\n"
-        if is_img(@request) && @request.resource != "/favicon.ico"
-            c_length = "content-length: #{File.open(".#{@request.resource}", "rb").read.length} \r\n"
+        if @type == "img"
+            c_length = "content-length: #{File.open("./public#{@request.resource}", "rb").read.length} \r\n"
         end
         return c_length
     end
 
     def content_type(request)
-        if request.class.name == "String" && request.downcase.end_with?(".css")
-            return "content-type: text/css \r\n"
-        end
         headers = request.headers
         accept = headers["Accept"]
         type = accept.split(",").first
