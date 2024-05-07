@@ -4,14 +4,14 @@ require_relative 'router.rb'
 class Response 
     attr_reader :status, :header_arr, :param_arr, :html
 
+
     def initialize(request, router, session)
         @router = router
         @request = request
         @session = session
-        @list = router.list
         @ok = @request.version + " 200 OK \r\n"
         @not_ok = @request.version + " 404 NOT FOUND \r\n"
-        @type = type_of_content(request)
+        @type = content_type(request)
         build_response_and_print()
     end
 
@@ -27,8 +27,6 @@ class Response
             content = html = "<html> <head> <meta charset='UTF-8'> </head> <h1> Route not found! :( </h1> </html>"
         end
         content_length = content_length(content)
-        content_type = content_type(@request)
-        #p status, content, content_length, content_type
         if @location
             status = "#{@request.version}" + " 302 FOUND \r\n"
             @session.print status
@@ -37,7 +35,7 @@ class Response
         else
             @session.print status
             @session.print content_length
-            @session.print content_type
+            @session.print @type[0]
             @session.print "\r\n"
             @session.print content
         end
@@ -48,16 +46,22 @@ class Response
 
     def content(route)
         method = @request.method
-        pos = @router.match_route(route, method)[0]
+        route_info = @router.match_route(route, method)[0]
         params = @router.match_route(route, method)[1]
         request_params = @request.params
         request_params.each do |param|
             symbol = param[0].to_sym
             params[symbol] = param[1]
         end
-        code = @list[pos][:block].call(params)
+        code = route_info[:block].call(params)
         if method == "GET"
-            return "<html> <head> <meta charset='UTF-8'> </head> #{code} </html>"
+            if File.exist?("public/html/layout.html")
+                html = File.read("public/html/layout.html")
+                html.gsub!("== yield", code)
+                return html
+            else
+                return code
+            end
         elsif method == "POST"
             @location = code
             return code
@@ -65,43 +69,37 @@ class Response
     end
 
     def static_resource(route)
-        if @type == "img"
+        if @type[1]
             return File.open("./public#{@request.resource}", "rb").read
-        elsif @type == "css" || @type == "js"
+        elsif @type[0] == "content-type: text/css \r\n" || @type[0] == "content-type: text/javascript \r\n"
             return File.read("./public#{@request.resource}")
-        end
-    end
-
-    def type_of_content(request)
-        if content_type(request).start_with?("content-type: image") && !content_type(request).end_with?("avif \r\n")
-            return "img"
-        elsif content_type(request).start_with?("content-type: text/css")
-            return "css"
-        elsif content_type(request).start_with?("content-type: text/javascript")
-            return "js"
         end
     end
 
     def content_length(input)
         c_length = "content-length: #{input.length} \r\n"
-        if @type == "img"
+        if @type[1]
             c_length = "content-length: #{File.open("./public#{@request.resource}", "rb").read.length} \r\n"
         end
         return c_length
     end
 
     def content_type(request)
+        image = false
         headers = request.headers
         accept = headers["Accept"]
         type = accept.split(",").first
         c_type = "content-type: #{type} \r\n"
         if request.resource.downcase.end_with?(".png")
             c_type = "content-type: image/png \r\n"
+            image = true
         elsif request.resource.downcase.end_with?(".jpg") || @request.resource.downcase.end_with?(".jpeg")
             c_type = "content-type: image/jpeg \r\n"
+            image = true
         elsif request.resource.downcase.end_with?(".gif")
             c_type = "content-type: image/gif \r\n" 
+            image = true
         end
-        return c_type
+        return [c_type, image]
     end
 end

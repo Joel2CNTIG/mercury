@@ -1,5 +1,9 @@
 class Request
     attr_reader :method, :resource, :version, :headers, :params
+
+    # Initializes and saves instance variables, runs private methods
+    #
+    # @param [String] string of request data 
     def initialize(rq_string)
         @data = rq_string.split("\r\n")
         row1 = @data[0]
@@ -13,6 +17,10 @@ class Request
 
     private
 
+    # Checks if string matches structure of params
+    #
+    # @param [String] string to check
+    # @return [Boolean] true if string matches- params, otherwise false
     def is_params?(str)
         if str.include?("?") || str.include?("&")
             return true
@@ -20,10 +28,17 @@ class Request
         return false
     end
 
+    # Splits input string when certain characters are met
+    #
+    # @param [String] string to split
+    # @return [String] string split by specified characters
     def split_by_char(str)
         str.split(/[?,=,&,%]/)
     end
 
+    # Gathers any parameters within request
+    #
+    # @return [Hash] hash with collected parameters
     def get_params
         params = {}
         contents = split_by_char(@row1_split[1])
@@ -44,6 +59,10 @@ class Request
         params
     end
 
+    # Constructs string with HTTP headers-syntax from array
+    #
+    # @param [Array] input array
+    # @return [String] header-formated string
     def construct_header_formated_string_from_arr(arr)
         str = ""
         i = 1
@@ -63,6 +82,9 @@ class Request
         return str
     end
 
+    # Collects headers within request
+    #
+    # @return [Hash] hash with headers
     def get_headers
         headers = {}
         @data.drop(1).each do |element|

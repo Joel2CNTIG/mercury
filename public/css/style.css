@@ -1,3 +1,25 @@
+* {
+    cursor: progress;
+}
+
 #dog {
     border: 5px solid black;
+}
+
+#form {
+    margin-top: 25px;
+    margin-bottom: 25px;
+}
+
+body {
+    background-color: rgb(255, 224, 229);
+}
+
+#head {
+    border: 5px solid rgb(254, 154, 171);
+    height: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: pink;
 }

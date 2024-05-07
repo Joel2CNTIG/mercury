@@ -6,6 +6,20 @@ class Router
         @list = []
     end
 
+    def redirect(url)
+        return url
+    end
+
+    def html(path, params)
+        html = File.read("./public/#{path}")
+        params.each {|key, value| 
+            str = '#'
+            str += "{params[:#{key}]}"
+            html = html.gsub(str, value)
+        }
+        return html
+    end
+
     def get(route_string, &blk)
         data = construct_get_and_post(route_string)
         @list << {symbols: data[0], route: Regexp.new(data[1]), block: blk, method: "GET"}
@@ -31,7 +45,7 @@ class Router
             i += 1
             j += 1
         end
-        return [@list.find_index(matching), params]
+        return [matching, params]
     end
 
     private

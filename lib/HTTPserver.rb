@@ -6,46 +6,20 @@ require 'debug'
 
 class HTTPServer
 
-    def initialize(port)
+    # Initializes and saves instance variables
+    #
+    # @param [Router] router to be utilized
+    # @param [Integer] port number of server
+    def initialize(router, port)
         @port = port
-        @location = nil
+        @router = router
     end
 
-    def redirect(url)
-        location = url
-    end
-
-    def html(path, params)
-        html = File.read("./public/#{path}")
-        params.each {|key, value| 
-            str = '#'
-            str += "{params[:#{key}]}"
-            html = html.gsub(str, value)
-        }
-        return html
-    end
-
-    def start(&blk)
+    # Main method. Receives request and calls on other classes to process it
+    #
+    def start()
         server = TCPServer.new(@port)
         puts "Listening on #{@port}"
-        router = Router.new
-
-        router.get('/mamma/:age') do |params|
-            "<h1> Din Morsa är #{params[:age]} år gammal! <h1>"
-        end
-        router.get('/error') do |params|
-            "<h1> error! <h1>"
-        end
-        router.get('/hej/:id') do |params|
-            html = html('html/start.html', params)
-        end 
-
-        router.post('/hej/:id/post-print_nbr') do |params|
-            f = File.open('test.txt', 'w')
-            f.puts(params[:pwd])
-            f.close
-            redirect("/hej/#{params[:id]}/banan")
-        end
 
         while session = server.accept
             data = ""
@@ -75,11 +49,7 @@ class HTTPServer
             puts data
             puts "-" * 40 
             request = Request.new(data)
-            response = Response.new(request, router, session)
-            @location = nil
+            response = Response.new(request, @router, session)
         end
     end
 end
-
-server = HTTPServer.new(4567)
-server.start
