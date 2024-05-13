@@ -38,6 +38,8 @@ class Request
 
     # Gathers any parameters within request
     #
+    # @see #is_params?
+    # @see #split_by_char
     # @return [Hash] hash with collected parameters
     def get_params
         params = {}
@@ -84,6 +86,7 @@ class Request
 
     # Collects headers within request
     #
+    # @see #construct_header_formated_string_from_arr
     # @return [Hash] hash with headers
     def get_headers
         headers = {}

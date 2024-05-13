@@ -23,10 +23,6 @@ class HTTPServer
 
         while session = server.accept
             data = ""
-
-            #om det är en post-request (form-url-encoded)
-            # läs en rad till
-
             
             while line = session.gets
                 unless line !~ /^\s*$/

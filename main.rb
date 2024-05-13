@@ -23,8 +23,10 @@ end
 
 router.post('/hej/:id/post-print_nbr') do |params|
     f = File.open('test.txt', 'w')
-    f.puts(params[:first_name])
-    f.puts(params[:pwd])
+    f.puts("user id: #{params[:id]}.")
+    f.puts("username: #{params[:first_name]}")
+    f.puts("password: #{params[:pwd]}")
+    f.puts("\n")
     f.close
     router.redirect("/hej/7")
 end
